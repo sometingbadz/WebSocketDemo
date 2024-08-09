@@ -1,0 +1,67 @@
+<html>
+
+
+<input id="textInput" style="width:100%;" placeholder="Type your message and press Enter" />
+
+<script>
+
+
+        // Add event listener to handle Enter key press
+        document.getElementById('textInput').addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault(); // Prevent default form submission if inside a form
+                let input = event.target;
+                let message = input.value.trim();
+                if (message) {
+                    sendMessage(message);
+                    input.value = ''; // Clear the input after sending
+                }
+            }
+        });
+
+
+</script>
+
+
+<script>
+    let webSocket = new WebSocket("ws://127.0.0.1:80");
+    let isConnected = false;
+
+    let sendMessage = (message) => { 
+        if (isConnected) {
+            console.log("sending message : " + message);
+            webSocket.send(message);
+        }
+    }
+
+
+    // Event handler for when the connection is opened
+    webSocket.onopen = () => {
+        console.log("WebSocket connection opened.");
+        // Send a message once the connection is open
+        isConnected = true;
+    };
+
+    // Event handler for when a message is received
+    webSocket.onmessage = (event) => {
+        console.log("Message received from server: ", event.data);
+    };
+
+    // Event handler for when an error occurs
+    webSocket.onerror = (error) => {
+        console.error("WebSocket error: ", error);
+    };
+
+    // Event handler for when the connection is closed
+    webSocket.onclose = () => {
+        console.log("WebSocket connection closed.");
+    };
+
+
+
+
+
+    
+</script>
+
+</html>
